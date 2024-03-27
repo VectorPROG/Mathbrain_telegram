@@ -1,43 +1,11 @@
 import telebot
 import webbrowser
-import random
 from telebot import types
 
 
 
 
 bot = telebot.TeleBot('7092646647:AAGkXYVfQtXCyfZP6xxIABUMFUbos13mbTo')
-
-
-def random_num():
-    random_number = random.randint(1, 10)#первое число
-    random_number2 = random.randint(1, 10)#второе число
-    #bot.send_message(message.chat.id, str(random_number) + '*' + str(random_number2))
-    random_number3 = random.randint(1, 3,)
-    if random_number3 == 1:
-        markup = types.InlineKeyboardMarkup()
-        btn1 = types.InlineKeyboardButton(str(random_number*random_number2))
-        markup.row(btn1)
-        btn2 = types.InlineKeyboardButton(str(random.randint(10, 100)))
-        markup.row(btn2)
-        btn3 = types.InlineKeyboardButton(str(random.randint(10, 100)))
-        markup.row(btn3)
-    elif random_number3 == 2:
-        markup = types.InlineKeyboardMarkup()
-        btn1 = types.InlineKeyboardButton(str(random.randint(10, 100)))
-        markup.row(btn1)
-        btn2 = types.InlineKeyboardButton(str(random_number*random_number2))
-        markup.row(btn2)
-        btn3 = types.InlineKeyboardButton(str(random.randint(10, 100)))
-        markup.row(btn3)
-    else:
-        markup = types.InlineKeyboardMarkup()
-        btn1 = types.InlineKeyboardButton(str(random.randint(10, 100)))
-        markup.row(btn1)
-        btn2 = types.InlineKeyboardButton(str(random.randint(10, 100)))
-        markup.row(btn2)
-        btn3 = types.InlineKeyboardButton(str(random_number*random_number2))
-        markup.row(btn3)
 
 @bot.message_handler(commands=['site', 'website'])
 def site(message):
@@ -48,9 +16,21 @@ def main(message):
     bot.send_message(message.chat.id, '<b>MathBrain</b> - это бот для Telegram, который поможет школьникам улучшить свои знания в таблице умножения. С помощью интерактивных заданий и игр, этот проект с открытым исходным кодом поможет вам легко и весело освоить основы математики. Никогда раньше учить таблицу умножения не было так просто и увлекательно!', parse_mode='html')
 @bot.message_handler(commands=['start', 'hello'])
 def start(message):
-    random_num()
     bot.send_message(message.chat.id, f'Привет, {message.from_user.first_name} {message.from_user.last_name}!')
+    markup = types.ReplyKeyboardMarkup()
+    btn1 = types.KeyboardButton('Перейти на сайт')
+    markup.row(btn1)
+    btn2 = types.KeyboardButton('Удалить фото')
+    btn3 = types.KeyboardButton('Изменить текст')
+    markup.row(btn2, btn3)
+    bot.send_message(message.chat.id, 'Привет', reply_markup=markup)
+    bot.register_next_step_handler(message, on_click)
 
+def on_click(message):
+    if message.text == 'Перейти на сайт':
+        bot.send_message(message.chat.id, 'Website is open')
+    elif message.text == 'Удалить фото':
+        bot.send_message(message.chat.id, 'Delete')
 @bot.message_handler(commands=['help'])
 def main(message):
     bot.send_message(message.chat.id, '<b>Help</b> information', parse_mode='html')
@@ -58,11 +38,20 @@ def main(message):
 @bot.message_handler(content_types=['photo'])
 def get_photo(message):
     markup = types.InlineKeyboardMarkup()
-    markup.add(types.InlineKeyboardButton('Перейти на сайт', url='https://google.com'))
-    markup.add(types.InlineKeyboardButton('Удалить фото', callback_data='delete'))
-    markup.add(types.InlineKeyboardButton('Изменить текст', callback_data='edit'))
+    btn1 = types.InlineKeyboardButton('Перейти на сайт', url='https://google.com')
+    markup.row(btn1)
+    btn2 = types.InlineKeyboardButton('Удалить фото', callback_data='delete')
+    btn3 = types.InlineKeyboardButton('Изменить текст', callback_data='edit')
+    markup.row(btn2, btn3)
     bot.reply_to(message, 'Крутая фотка!', reply_markup=markup)
 
+
+@bot.callback_query_handler(func=lambda callback: True)
+def callback_message(callback):
+    if callback.data == 'delete':
+        bot.delete_message(callback.message.chat.id, callback.message.message_id - 1)
+    elif callback.data == 'edit':
+        bot.edit_message_text('Edit text', callback.message.chat.id, callback.message.message_id)
 @bot.message_handler()
 def info(message):
     if message.text.lower() == 'привет' or message.text.lower() == 'start' or message.text.lower() == 'hello' or message.text.lower() == 'старт':
