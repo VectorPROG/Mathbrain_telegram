@@ -2,14 +2,23 @@ import random
 import telebot
 from telebot import types
 
-bot = telebot.TeleBot('6368856712:AAEdMJgAWLdkT5ZI1fsBbeu08HucZ8d8huQ')
+bot = telebot.TeleBot('7092646647:AAGkXYVfQtXCyfZP6xxIABUMFUbos13mbTo')
 
-
+@bot.message_handler(commands=['help'])
+def start(message):
+    bot.send_message(message.chat.id, 'Здесь будет информация для помощи')
+@bot.message_handler(commands=['main'])
+def start(message):
+    bot.send_message(message.chat.id, 'MathBrain - это бот для Telegram, который поможет школьникам улучшить свои знания в таблице умножения. С помощью интерактивных заданий и игр, этот проект с открытым исходным кодом поможет вам легко и весело освоить основы математики. Никогда раньше учить таблицу умножения не было так просто и увлекательно!')
+@bot.message_handler(commands=['site', 'website'])
+def start(message):
+    bot.send_message(message.chat.id, 'По этой команде будет открываться сайт проекта. Сейчас он в разработке')
 @bot.message_handler(commands=['start'])
 def start(message):
     markup = types.ReplyKeyboardMarkup()
     itembtn = types.KeyboardButton('Сгенерировать пример')
     markup.add(itembtn)
+    bot.send_message(message.chat.id, "Привет, "+ message.from_user.first_name)
     bot.send_message(message.chat.id, "Нажмите кнопку, чтобы сгенерировать пример умножения.", reply_markup=markup)
 
 
