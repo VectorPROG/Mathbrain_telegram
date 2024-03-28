@@ -36,4 +36,4 @@ def check_answer(message, num1, num2):
     generate_question(message)
 
 
-bot.polling()
+bot.polling(none_stop=True)
